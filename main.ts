@@ -9,6 +9,7 @@ class Gravity {
 	refresh() {
 		this.engine.world.gravity.x = Math.random() - 0.5;
 		this.engine.world.gravity.y = Math.random() - 0.5;
+		socket.emit('sendInfo', { x: this.circle1.position.x, y: this.circle1.position.y })
 	}
 }
 
@@ -46,7 +47,13 @@ function init() {
 	boxB.label = "player"
 	boxB.render.fillStyle = "green"
 	boxB.frictionAir = 0
-
+	var other1 = Bodies.circle(400, 300, 20, { isStatic: true });
+	other1.label = "other"
+	other1.render.fillStyle = "blue";
+	socket.on('scoreOther', function (babyGame) {
+		other1.position.x = babyGame.x;
+		other1.position.y = babyGame.y;
+	});
 	// mouse constraint
 	var mouse = Mouse.create(render.canvas)
 	let constraint: Matter.IMouseConstraintDefinition = {};
@@ -59,7 +66,7 @@ function init() {
 	World.add(engine.world, mouseConstraint);
 
 	// add all of the bodies to the world
-	World.add(engine.world, [boxA, boxB]);
+	World.add(engine.world, [boxA, boxB, other1]);
 	World.add(engine.world, [
 		// walls
 		Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
@@ -90,7 +97,7 @@ function init() {
 			baby.label = 'baby';
 			baby.frictionAir = 0;
 			World.add(engine.world, baby);
-			console.log(baby)
+			// console.log(baby)
 			//Here body with label 'Player' is in the pair, do some stuff with it
 		}
 	});
@@ -107,13 +114,10 @@ var io
 var socket = io.connect('http://localhost:4200');
 socket.on('connect', function (data) {
 	//sending the current user positions
-	socket.emit('sendInfo', infos);
-});
-socket.on('scoreOther', function (babyGame) {
-	//receive datas from the other player
-	console.log("babyGame ", babyGame);
+	// socket.emit('sendInfo', infos);
 });
 
-setInterval(function () {
-	socket.emit('sendInfo', infos);
-}, 10000)
+
+// setInterval(function () {
+// 	socket.emit('sendInfo', infos);
+// }, 10000)
