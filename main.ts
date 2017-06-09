@@ -1,3 +1,5 @@
+// import * as io from 'socket.io'
+// import * as Matter from 'Matter-js'
 window.onload = init;
 
 
@@ -36,11 +38,16 @@ function init() {
 	// create two boxes and a ground
 	var boxA = Bodies.circle(400, 300, 20);
 	gravity.circle1 = boxA;
+
+	boxA.label = "player"
 	boxA.render.fillStyle = "green";
+	boxA.frictionAir = 0
 	var boxB = Bodies.circle(400, 0, 20);
+	boxB.label = "player"
 	boxB.render.fillStyle = "green"
+	boxB.frictionAir = 0
 
-
+	// mouse constraint
 	var mouse = Mouse.create(render.canvas)
 	let constraint: Matter.IMouseConstraintDefinition = {};
 	constraint.mouse = mouse;
@@ -67,9 +74,46 @@ function init() {
 	render.options.wireframes = false;
 	Render.run(render);
 	Events.on(render, 'beforeRender', () => { gravity.refresh() })
+
 	render['mouse'] = mouse;
 
-	Matter.Events.on(engine, 'collisionActive', function (e) {
-		console.log(e);
+	Events.on(engine, 'collisionStart ', function (e) {
+		var i, pair,
+			length = e.pairs.length;
+		for (i = 0; i < length; i++) {
+			pair = e.pairs[i];
+			// console.log(pair)
+			if (pair.bodyA.label !== 'player' || pair.bodyB.label !== 'player') {
+				break;
+			}
+			var baby = Bodies.circle(pair.bodyA.position.x, pair.bodyA.position.y, 10);
+			baby.label = 'baby';
+			baby.frictionAir = 0;
+			World.add(engine.world, baby);
+			console.log(baby)
+			//Here body with label 'Player' is in the pair, do some stuff with it
+		}
 	});
 }
+var infos = [{
+	x: 10,
+	y: 20,
+	role: 'BM',
+	radius: 50,
+	children: true,
+	id: 10
+}]
+var io
+var socket = io.connect('http://localhost:4200');
+socket.on('connect', function (data) {
+	//sending the current user positions
+	socket.emit('sendInfo', infos);
+});
+socket.on('scoreOther', function (babyGame) {
+	//receive datas from the other player
+	console.log("babyGame ", babyGame);
+});
+
+setInterval(function () {
+	socket.emit('sendInfo', infos);
+}, 10000)

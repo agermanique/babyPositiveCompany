@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@types/matter-js": "^0.9.32",
-    "matter-js": "^0.12.0"
+    "matter-js": "^0.12.0",
+    "socket.io": "^2.0.2"
   },
   "devDependencies": {},
   "scripts": {
