@@ -1,6 +1,8 @@
 // import * as io from 'socket.io'
 // import * as Matter from 'Matter-js'
 window.onload = init;
+var myscoreElem = document.getElementById('myscore');
+var otherscoreElem = document.getElementById('otherscore');
 var Gravity = (function () {
     function Gravity() {
         this.babies = [];
@@ -63,6 +65,7 @@ function init() {
         other2.position.x = babyGame.player2.x;
         other2.position.y = babyGame.player2.y;
         var oldNbr = otherBabies.length;
+        otherscoreElem.innerText = babyGame.babies.length.toString();
         if (babyGame.babies) {
             if (otherBabies.length < babyGame.babies.length) {
                 for (var i = oldNbr; i < babyGame.babies.length; i++) {
@@ -122,6 +125,7 @@ function init() {
             baby.frictionAir = 0;
             World.add(engine.world, baby);
             gravity.babies.push(baby);
+            myscoreElem.innerText = gravity.babies.length.toString();
             // console.log(baby)
             //Here body with label 'Player' is in the pair, do some stuff with it
         }
