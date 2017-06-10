@@ -1,5 +1,5 @@
-// import * as io from 'socket.io'
-// import * as Matter from 'Matter-js'
+import * as io from 'socket.io'
+import * as Matter from 'Matter-js'
 // import Promise from "ts-promise";
 window.onload = init;
 var myscoreElem = document.getElementById('myscore');

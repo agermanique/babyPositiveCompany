@@ -1,5 +1,7 @@
-// import * as io from 'socket.io'
-// import * as Matter from 'Matter-js'
+"use strict";
+exports.__esModule = true;
+var io = require("socket.io");
+var Matter = require("Matter-js");
 // import Promise from "ts-promise";
 window.onload = init;
 var myscoreElem = document.getElementById('myscore');
@@ -160,7 +162,8 @@ var infos = [{
         children: true,
         id: 10
     }];
-var socket = io.connect('http://localhost:4200');
+// var socket = io.connect('http://localhost:4200');
+var socket = io.connect('https://baby-positive-company.herokuapp.com/');
 socket.on('connect', function (data) {
     //sending the current user positions
     //socket.emit('sendInfo', infos);
