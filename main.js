@@ -133,6 +133,14 @@ function init() {
             else {
                 playSound('kiss');
             }
+            // var baby = Bodies.circle(pair.bodyA.position.x, pair.bodyA.position.y, 10);
+            // baby.label = 'baby';
+            // baby.frictionAir = 0;
+            // World.add(engine.world, baby);
+            // gravity.babies.push(baby)
+            // myscoreElem.innerText = gravity.babies.length.toString();
+            // console.log(baby)
+            //Here body with label 'Player' is in the pair, do some stuff with it
         }
     });
     function createBaby(pair) {
@@ -152,7 +160,6 @@ var infos = [{
         children: true,
         id: 10
     }];
-var io;
 var socket = io.connect('http://localhost:4200');
 socket.on('connect', function (data) {
     //sending the current user positions
