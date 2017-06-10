@@ -160,7 +160,6 @@ var infos = [{
         children: true,
         id: 10
     }];
-var io;
 var socket = io.connect('http://localhost:4200');
 socket.on('connect', function (data) {
     //sending the current user positions
