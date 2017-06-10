@@ -61,6 +61,7 @@ function init() {
     other2.render.fillStyle = "blue";
     var otherBabies = [];
     socket.on('scoreOther', function (babyGame) {
+        console.log("babyGame ", babyGame);
         other1.position.x = babyGame.player1.x;
         other1.position.y = babyGame.player1.y;
         other2.position.x = babyGame.player2.x;
@@ -113,6 +114,7 @@ function init() {
     render['mouse'] = mouse;
     engine.world.gravity.x = 0;
     engine.world.gravity.y = 0;
+    var count = 0;
     Events.on(engine, 'collisionStart ', function (e) {
         var i, pair, length = e.pairs.length;
         for (i = 0; i < length; i++) {
@@ -121,19 +123,26 @@ function init() {
             if (pair.bodyA.label !== 'player' || pair.bodyB.label !== 'player') {
                 break;
             }
-            playSound('kiss').then(function () {
+            count++;
+            console.log("count ", count);
+            if (count > 4) {
+                createBaby(pair);
                 playSound('cry');
-            }, function (err) {
-                console.log("e ", e);
-            });
-            var baby = Bodies.circle(pair.bodyA.position.x, pair.bodyA.position.y, 10);
-            baby.label = 'baby';
-            baby.frictionAir = 0;
-            World.add(engine.world, baby);
-            gravity.babies.push(baby);
-            myscoreElem.innerText = gravity.babies.length.toString();
+                count = 0;
+            }
+            else {
+                playSound('kiss');
+            }
         }
     });
+    function createBaby(pair) {
+        var baby = Bodies.circle(pair.bodyA.position.x, pair.bodyA.position.y, 10);
+        baby.label = 'baby';
+        baby.frictionAir = 0;
+        World.add(engine.world, baby);
+        gravity.babies.push(baby);
+        myscoreElem.innerText = gravity.babies.length.toString();
+    }
 }
 var infos = [{
         x: 10,
@@ -147,7 +156,7 @@ var io;
 var socket = io.connect('http://localhost:4200');
 socket.on('connect', function (data) {
     //sending the current user positions
-    // socket.emit('sendInfo', infos);
+    //socket.emit('sendInfo', infos);
 });
 // setInterval(function () {
 // 	socket.emit('sendInfo', infos);
@@ -158,19 +167,9 @@ var backgroundSound = document.getElementById('backSound');
 backgroundSound.currentTime = 0;
 backgroundSound.play();
 function playSound(type) {
-    return new Promise(function (resolve, reject) {
-        if (isPlaying()) {
-            reject(new Error("my error"));
-        }
-        else {
-            hitSound = document.getElementById(type);
-            hitSound.currentTime = 0;
-            hitSound.play();
-            hitSound.onended = function () {
-                resolve('next');
-            };
-        }
-    });
+    hitSound = document.getElementById(type);
+    hitSound.currentTime = 0;
+    hitSound.play();
 }
 function isPlaying() {
     return !hitSound.paused;
