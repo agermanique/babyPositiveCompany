@@ -160,7 +160,8 @@ var infos = [{
         children: true,
         id: 10
     }];
-var socket = io.connect('http://localhost:4200');
+// var socket = io.connect('http://localhost:4200');
+var socket = io.connect('https://baby-positive-company.herokuapp.com/');
 socket.on('connect', function (data) {
     //sending the current user positions
     //socket.emit('sendInfo', infos);
