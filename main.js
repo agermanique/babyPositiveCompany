@@ -1,5 +1,6 @@
 // import * as io from 'socket.io'
 // import * as Matter from 'Matter-js'
+// import Promise from "ts-promise";
 window.onload = init;
 var myscoreElem = document.getElementById('myscore');
 var otherscoreElem = document.getElementById('otherscore');
@@ -120,14 +121,17 @@ function init() {
             if (pair.bodyA.label !== 'player' || pair.bodyB.label !== 'player') {
                 break;
             }
+            playSound('kiss').then(function () {
+                playSound('cry');
+            }, function (err) {
+                console.log("e ", e);
+            });
             var baby = Bodies.circle(pair.bodyA.position.x, pair.bodyA.position.y, 10);
             baby.label = 'baby';
             baby.frictionAir = 0;
             World.add(engine.world, baby);
             gravity.babies.push(baby);
             myscoreElem.innerText = gravity.babies.length.toString();
-            // console.log(baby)
-            //Here body with label 'Player' is in the pair, do some stuff with it
         }
     });
 }
@@ -147,4 +151,27 @@ socket.on('connect', function (data) {
 });
 // setInterval(function () {
 // 	socket.emit('sendInfo', infos);
-// }, 10000) 
+// }, 10000)
+var hitSound = new Audio();
+var backgroundSound = new Audio();
+var backgroundSound = document.getElementById('backSound');
+backgroundSound.currentTime = 0;
+backgroundSound.play();
+function playSound(type) {
+    return new Promise(function (resolve, reject) {
+        if (isPlaying()) {
+            reject(new Error("my error"));
+        }
+        else {
+            hitSound = document.getElementById(type);
+            hitSound.currentTime = 0;
+            hitSound.play();
+            hitSound.onended = function () {
+                resolve('next');
+            };
+        }
+    });
+}
+function isPlaying() {
+    return !hitSound.paused;
+}
